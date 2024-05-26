@@ -690,15 +690,15 @@ int feedingTimeMinute()
   // if it's odd, then the hour's not whole, aka an extra 30 minutes.
   int minute = feedingTime;
   minute %= HOUR_FACTOR;
-  // DEBUG_PRINT("Feeding minute (raw): ");
-  // DEBUG_PRINT(minute);
-  // DEBUG_PRINT(" (");
-  // DEBUG_PRINT(feedingTime);
-  // DEBUG_PRINTLN(")");
+  DEBUG_PRINT("Feeding minute (raw): ");
+  DEBUG_PRINT(minute);
+  DEBUG_PRINT(" (");
+  DEBUG_PRINT(feedingTime);
+  DEBUG_PRINTLN(")");
   minute *= TIME_EDIT_PRECISION;
-  // DEBUG_PRINT("Feeding minute: ");
-  // DEBUG_PRINTLN(minute);
-  // Serial.flush();
+  DEBUG_PRINT("Feeding minute: ");
+  DEBUG_PRINTLN(minute);
+  Serial.flush();
   return minute;
 }
 
