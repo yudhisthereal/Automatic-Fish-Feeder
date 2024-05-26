@@ -146,6 +146,9 @@ void loop()
 //
 //
 
+/**
+ * @brief handles Low Power, i.e. LCD backlights and sleep
+ */
 void managePower()
 {
   if (backlightOn)
@@ -161,6 +164,9 @@ void managePower()
   trySleeping();
 }
 
+/**
+ * @brief specific things to do right before sleep
+ */
 void preSleep()
 {
   attachInterrupt(digitalPinToInterrupt(BTN_EDIT), btnISR, LOW);
@@ -170,6 +176,9 @@ void preSleep()
   Serial.flush();
 }
 
+/**
+ * @brief specific things to do right after sleep
+ */
 void postSleep()
 {
   detachInterrupt(digitalPinToInterrupt(BTN_EDIT));
@@ -178,6 +187,9 @@ void postSleep()
   startLcd();
 }
 
+/**
+ * @brief attempts to go PowerDown mode, if already awake for long enough
+ */
 void trySleeping()
 {
   unsigned long currentTime = millis();
@@ -189,6 +201,10 @@ void trySleeping()
   }
 }
 
+/**
+ * @brief check if backlight should be off
+ * @return a boolean: whether we should turn LCD backlight off
+ */
 bool shouldNoBacklight()
 {
   bool goNoBacklight = false;
@@ -208,6 +224,9 @@ bool shouldNoBacklight()
 //
 //
 
+/**
+ * @brief turn lcd display and backlight on
+ */
 void startLcd()
 {
   lastLcdBacklight = lastWakeUp = millis(); // keeping it awake
@@ -227,12 +246,18 @@ void startLcd()
   enableButtons();
 }
 
+/**
+ * @brief initializes the LCD, then calls startLcd()
+ */
 void initLcd()
 {
   lcd.init();
   startLcd();
 }
 
+/**
+ * @brief initializes the RTC and its alarm interrupt
+ */
 void initRtc()
 {
   if (!rtc.begin())
@@ -273,6 +298,9 @@ void initRtc()
 //
 //
 
+/**
+ * @brief clears the alarm1 interrupt flag of the RTC, then set the alarm again.
+ */
 void setAlarmInterrupt()
 {
   // clear alarm
@@ -324,11 +352,22 @@ bool isButtonsEnabled()
   return buttonsEnabled;
 }
 
-int btnPinToArrId(int btnId)
+/**
+ * @brief convert button pin number to array index. Is used to access button related arrays.
+ * @param btnPin the button pin on the board
+ * @return button ID used to access arrays related to buttons.
+ */
+int btnPinToArrId(int btnPin)
 {
-  return btnId - 2;
+  return btnPin - 2;
 }
 
+#ifdef DEBUG
+/**
+ * @brief debug function to print button events
+ * @param i button index
+ * @param event button event
+ */
 void printEvent(int i, int event)
 {
   char eventStr[8];
@@ -356,6 +395,15 @@ void printEvent(int i, int event)
   DEBUG_PRINTLN(eventStr);
   Serial.flush();
 }
+
+#else
+
+void printEvent(int i, int event)
+{
+  // do nothing
+}
+
+#endif
 
 /*
 return values:
@@ -690,7 +738,6 @@ void applyNewTimeRTC()
   rtc.adjust(DateTime(2024, 5, 12, rtcHour(), rtcMinute(), 0));
 }
 
-
 /////////////
 // DISPLAYS
 /////////////
@@ -775,7 +822,7 @@ void displayTime()
 {
   // Display current time and feeding time on LCD
   lcd.clear();
-  lcd.setCursor(5,0);
+  lcd.setCursor(5, 0);
 
   DateTime now = rtc.now();
   int hour = now.hour();

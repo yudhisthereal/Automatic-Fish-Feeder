@@ -139,6 +139,9 @@ void loop()
 //
 //
 
+/**
+ * @brief handles Low Power, i.e. LCD backlights and sleep
+ */
 void managePower()
 {
   if (backlightOn)
@@ -154,6 +157,9 @@ void managePower()
   trySleeping();
 }
 
+/**
+ * @brief specific things to do right before sleep
+ */
 void preSleep()
 {
   attachInterrupt(((2 /* Enter edit mode or confirm edit*/) == 2 ? 0 : ((2 /* Enter edit mode or confirm edit*/) == 3 ? 1 : -1)), btnISR, 0x0);
@@ -163,6 +169,9 @@ void preSleep()
   Serial.flush();
 }
 
+/**
+ * @brief specific things to do right after sleep
+ */
 void postSleep()
 {
   detachInterrupt(((2 /* Enter edit mode or confirm edit*/) == 2 ? 0 : ((2 /* Enter edit mode or confirm edit*/) == 3 ? 1 : -1)));
@@ -171,6 +180,9 @@ void postSleep()
   startLcd();
 }
 
+/**
+ * @brief attempts to go PowerDown mode, if already awake for long enough
+ */
 void trySleeping()
 {
   unsigned long currentTime = millis();
@@ -182,6 +194,10 @@ void trySleeping()
   }
 }
 
+/**
+ * @brief check if backlight should be off
+ * @return a boolean: whether we should turn LCD backlight off
+ */
 bool shouldNoBacklight()
 {
   bool goNoBacklight = false;
@@ -201,6 +217,9 @@ bool shouldNoBacklight()
 //
 //
 
+/**
+ * @brief turn lcd display and backlight on
+ */
 void startLcd()
 {
   lastLcdBacklight = lastWakeUp = millis(); // keeping it awake
@@ -220,12 +239,18 @@ void startLcd()
   enableButtons();
 }
 
+/**
+ * @brief initializes the LCD, then calls startLcd()
+ */
 void initLcd()
 {
   lcd.init();
   startLcd();
 }
 
+/**
+ * @brief initializes the RTC and its alarm interrupt
+ */
 void initRtc()
 {
   if (!rtc.begin())
@@ -246,13 +271,13 @@ void initRtc()
     // When time needs to be set on a new device, or after a power loss, the
     // following line sets the RTC to the date & time this sketch was compiled
     rtc.adjust(DateTime((reinterpret_cast<const __FlashStringHelper *>(
-# 255 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
+# 280 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
                        (__extension__({static const char __c[] __attribute__((__progmem__)) = ("May 27 2024"); &__c[0];}))
-# 255 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+# 280 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
                        )), (reinterpret_cast<const __FlashStringHelper *>(
-# 255 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
-                                    (__extension__({static const char __c[] __attribute__((__progmem__)) = ("01:09:31"); &__c[0];}))
-# 255 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+# 280 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
+                                    (__extension__({static const char __c[] __attribute__((__progmem__)) = ("01:26:31"); &__c[0];}))
+# 280 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
                                     ))));
   }
 
@@ -274,6 +299,9 @@ void initRtc()
 //
 //
 
+/**
+ * @brief clears the alarm1 interrupt flag of the RTC, then set the alarm again.
+ */
 void setAlarmInterrupt()
 {
   // clear alarm
@@ -325,11 +353,22 @@ bool isButtonsEnabled()
   return buttonsEnabled;
 }
 
-int btnPinToArrId(int btnId)
+/**
+ * @brief convert button pin number to array index. Is used to access button related arrays.
+ * @param btnPin the button pin on the board
+ * @return button ID used to access arrays related to buttons.
+ */
+int btnPinToArrId(int btnPin)
 {
-  return btnId - 2;
+  return btnPin - 2;
 }
 
+
+/**
+ * @brief debug function to print button events
+ * @param i button index
+ * @param event button event
+ */
 void printEvent(int i, int event)
 {
   char eventStr[8];
@@ -357,7 +396,7 @@ void printEvent(int i, int event)
   Serial.println(eventStr);
   Serial.flush();
 }
-
+# 408 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 /*
 return values:
   0: no events
@@ -691,7 +730,6 @@ void applyNewTimeRTC()
   rtc.adjust(DateTime(2024, 5, 12, rtcHour(), rtcMinute(), 0));
 }
 
-
 /////////////
 // DISPLAYS
 /////////////
@@ -776,7 +814,7 @@ void displayTime()
 {
   // Display current time and feeding time on LCD
   lcd.clear();
-  lcd.setCursor(5,0);
+  lcd.setCursor(5, 0);
 
   DateTime now = rtc.now();
   int hour = now.hour();

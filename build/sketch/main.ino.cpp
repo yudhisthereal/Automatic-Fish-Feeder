@@ -110,83 +110,83 @@ const int BTN_PINS[4] = {
 void setup();
 #line 133 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void loop();
-#line 149 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 152 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void managePower();
-#line 164 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 170 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void preSleep();
-#line 173 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 182 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void postSleep();
-#line 181 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 193 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void trySleeping();
-#line 192 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 208 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 bool shouldNoBacklight();
-#line 211 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
-void startLcd();
 #line 230 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+void startLcd();
+#line 252 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void initLcd();
-#line 236 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 261 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void initRtc();
-#line 276 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 304 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void setAlarmInterrupt();
-#line 296 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 324 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void btnISR();
-#line 301 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 329 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void alarmISR();
-#line 312 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 340 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void enableButtons();
-#line 317 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 345 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void disableButtons();
-#line 322 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 350 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 bool isButtonsEnabled();
-#line 327 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
-int btnPinToArrId(int btnId);
-#line 332 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 360 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+int btnPinToArrId(int btnPin);
+#line 371 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void printEvent(int i, int event);
-#line 409 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 457 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int checkBtn(int btnId);
-#line 440 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 488 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int checkBtnEdit(int event);
-#line 480 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 528 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int checkBtnIncr(int event);
-#line 501 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 549 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int checkBtnDecr(int event);
-#line 522 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 570 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int checkBtnFeed(int event);
-#line 545 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 593 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void handleButtonEvents();
-#line 585 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 633 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void startFeeding();
-#line 624 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 672 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void handleAutoFeeding();
-#line 641 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 689 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int feedingTimeHour();
-#line 646 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 694 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int feedingTimeMinute();
-#line 651 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 699 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int rtcHour();
-#line 656 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 704 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int rtcMinute();
-#line 661 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 709 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void setRtcTimeVar(int hour, int minute);
-#line 666 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 714 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 bool syncRtcTimeVar();
-#line 688 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 736 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void applyNewTimeRTC();
-#line 701 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 748 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void updateUI();
-#line 717 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 764 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void displayRtcEdit();
-#line 745 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 792 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void displayFeedTimeEdit();
-#line 774 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 821 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void displayTime();
-#line 820 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 867 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void blinkEditText(bool editMode);
-#line 852 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 899 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void handleUi();
-#line 874 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 921 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void loadFromEEPROM();
-#line 890 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 937 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void saveFeedingTime();
 #line 107 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void setup()
@@ -231,6 +231,9 @@ void loop()
 //
 //
 
+/**
+ * @brief handles Low Power, i.e. LCD backlights and sleep
+ */
 void managePower()
 {
   if (backlightOn)
@@ -246,6 +249,9 @@ void managePower()
   trySleeping();
 }
 
+/**
+ * @brief specific things to do right before sleep
+ */
 void preSleep()
 {
   attachInterrupt(digitalPinToInterrupt(BTN_EDIT), btnISR, LOW);
@@ -255,6 +261,9 @@ void preSleep()
   Serial.flush();
 }
 
+/**
+ * @brief specific things to do right after sleep
+ */
 void postSleep()
 {
   detachInterrupt(digitalPinToInterrupt(BTN_EDIT));
@@ -263,6 +272,9 @@ void postSleep()
   startLcd();
 }
 
+/**
+ * @brief attempts to go PowerDown mode, if already awake for long enough
+ */
 void trySleeping()
 {
   unsigned long currentTime = millis();
@@ -274,6 +286,10 @@ void trySleeping()
   }
 }
 
+/**
+ * @brief check if backlight should be off
+ * @return a boolean: whether we should turn LCD backlight off
+ */
 bool shouldNoBacklight()
 {
   bool goNoBacklight = false;
@@ -293,6 +309,9 @@ bool shouldNoBacklight()
 //
 //
 
+/**
+ * @brief turn lcd display and backlight on
+ */
 void startLcd()
 {
   lastLcdBacklight = lastWakeUp = millis(); // keeping it awake
@@ -312,12 +331,18 @@ void startLcd()
   enableButtons();
 }
 
+/**
+ * @brief initializes the LCD, then calls startLcd()
+ */
 void initLcd()
 {
   lcd.init();
   startLcd();
 }
 
+/**
+ * @brief initializes the RTC and its alarm interrupt
+ */
 void initRtc()
 {
   if (!rtc.begin())
@@ -358,6 +383,9 @@ void initRtc()
 //
 //
 
+/**
+ * @brief clears the alarm1 interrupt flag of the RTC, then set the alarm again.
+ */
 void setAlarmInterrupt()
 {
   // clear alarm
@@ -409,11 +437,22 @@ bool isButtonsEnabled()
   return buttonsEnabled;
 }
 
-int btnPinToArrId(int btnId)
+/**
+ * @brief convert button pin number to array index. Is used to access button related arrays.
+ * @param btnPin the button pin on the board
+ * @return button ID used to access arrays related to buttons.
+ */
+int btnPinToArrId(int btnPin)
 {
-  return btnId - 2;
+  return btnPin - 2;
 }
 
+#ifdef DEBUG
+/**
+ * @brief debug function to print button events
+ * @param i button index
+ * @param event button event
+ */
 void printEvent(int i, int event)
 {
   char eventStr[8];
@@ -441,6 +480,15 @@ void printEvent(int i, int event)
   DEBUG_PRINTLN(eventStr);
   Serial.flush();
 }
+
+#else
+
+void printEvent(int i, int event)
+{
+  // do nothing
+}
+
+#endif
 
 /*
 return values:
@@ -775,7 +823,6 @@ void applyNewTimeRTC()
   rtc.adjust(DateTime(2024, 5, 12, rtcHour(), rtcMinute(), 0));
 }
 
-
 /////////////
 // DISPLAYS
 /////////////
@@ -860,7 +907,7 @@ void displayTime()
 {
   // Display current time and feeding time on LCD
   lcd.clear();
-  lcd.setCursor(5,0);
+  lcd.setCursor(5, 0);
 
   DateTime now = rtc.now();
   int hour = now.hour();
