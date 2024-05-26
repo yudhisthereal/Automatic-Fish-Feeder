@@ -1,4 +1,3 @@
-```
 # Automatic Fish Feeder
 
 ![Automatic Fish Feeder](images/fish_feeder.jpg)
@@ -39,4 +38,3 @@ This project is licensed under the [MIT License](LICENSE).
 ---
 
 **Disclaimer:** This project is intended for personal use and experimentation. Ensure proper care and monitoring of your fish at all times.
-```
