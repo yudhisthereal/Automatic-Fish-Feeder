@@ -277,7 +277,7 @@ void initRtc()
 # 280 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
                        )), (reinterpret_cast<const __FlashStringHelper *>(
 # 280 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
-                                    (__extension__({static const char __c[] __attribute__((__progmem__)) = ("01:29:27"); &__c[0];}))
+                                    (__extension__({static const char __c[] __attribute__((__progmem__)) = ("01:59:00"); &__c[0];}))
 # 280 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
                                     ))));
   }
