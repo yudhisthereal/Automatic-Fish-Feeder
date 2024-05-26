@@ -1,0 +1,7 @@
+{
+    "output": "./build",
+    "sketch": "main/main.ino",
+    "board": "arduino:avr:uno",
+    "programmer": "avrispmkii",
+    "port": "/dev/ttyUSB0"
+}
