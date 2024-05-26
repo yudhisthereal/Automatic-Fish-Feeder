@@ -127,14 +127,6 @@ void loop() {
     btnEvents += checkBtn(BTN_PINS[i]);
   }
 
-  ///////////////////////////////////////////////////////
-  // Feeding is handled by RTC alarm
-  // uncomment the code below if RTC alarm doesn't work
-  ///////////////////////////////////////////////////////
-  // else {
-  //   checkFeedingTime();
-  // }
-
   // Check if there are button events
   if (btnEvents > 0) {
     startLcd();
@@ -151,6 +143,19 @@ void loop() {
     blinkEditingText(1);
   } else if (isEditingTimeFeed) {
     blinkEditingText(0);
+  }
+
+  ///////////////////////////////////////////////////////
+  // Feeding is handled by RTC alarm
+  // uncomment the code below if RTC alarm doesn't work
+  ///////////////////////////////////////////////////////
+  // 
+  // checkFeedingTime();
+  // 
+
+  if (rtc.alarmFired(1)) {
+    startFeeding();
+    setAlarmInterrupt();
   }
 
   delay(25); // Debounce buttons and avoid busy loop
@@ -188,12 +193,6 @@ void postSleep() {
   Serial.println("I've woken up!");
 
   startLcd();
-
-  // if woken up by alarm, it's feeding time
-  if (rtc.alarmFired(1)) {
-    startFeeding();
-    setAlarmInterrupt();
-  }
 }
 
 void trySleeping() {
@@ -262,13 +261,13 @@ void initRtc() {
     // When time needs to be set on a new device, or after a power loss, the
     // following line sets the RTC to the date & time this sketch was compiled
     rtc.adjust(DateTime((reinterpret_cast<const __FlashStringHelper *>(
-# 263 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
+# 262 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
                        (__extension__({static const char __c[] __attribute__((__progmem__)) = ("May 26 2024"); &__c[0];}))
-# 263 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+# 262 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
                        )), (reinterpret_cast<const __FlashStringHelper *>(
-# 263 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
-                                    (__extension__({static const char __c[] __attribute__((__progmem__)) = ("22:22:54"); &__c[0];}))
-# 263 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+# 262 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
+                                    (__extension__({static const char __c[] __attribute__((__progmem__)) = ("22:49:14"); &__c[0];}))
+# 262 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
                                     ))));
   }
 
