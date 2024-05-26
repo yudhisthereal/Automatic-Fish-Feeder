@@ -12,9 +12,6 @@
 
 
 
-
-
-
 // Define LCD address and button pins
 
 
@@ -23,6 +20,10 @@
 
 
 // Define servo pin and feeding duration
+
+
+
+// Define edit mode IDs
 
 
 
@@ -65,8 +66,9 @@ int feedingTime = 0; // Adjusted during init
 int rtcTime = 0; // rtc time in minutes (max = 1440)
 
 // RTC editing steps
-const int RTC_EDIT_STEPS[6] = {1, 5, 10, 15, 30, 60}; // edit steps (minutes) to choose from
-int rtcStepID = 0; // index of minutes chosen from RTC_EDIT_STEPS
+const int EDIT_STEPS[6] = {1, 5, 10, 15, 30, 60}; // edit steps (minutes) to choose from
+byte rtcStepID = 0; // index of minutes chosen from EDIT_STEPS
+byte feedStepID = 1; // index of minutes chosen from EDIT_STEPS
 
 // Flags
 // bool alreadyFed = false;       // Already fed at a certain time, don't feed again
@@ -100,7 +102,7 @@ void setup()
 
   Serial.begin(9600);
 
-  DEBUG_PRINTLN("System Starting");
+  Serial.println("System Starting");
 
   servo.attach(11);
   servo.write(0);
@@ -124,54 +126,11 @@ void setup()
 void loop()
 {
   managePower();
+  handleButtonEvents();
+  handleUi();
+  handleAutoFeeding();
 
-  // Track how many buttons pressed
-  int btnEvents = 0;
-
-  // Check button inputs
-  for (int i = 0; i < 4; i++)
-  {
-    btnEvents += checkBtn(BTN_PINS[i]);
-  }
-
-  // Check if there are button events
-  if (btnEvents > 0)
-  {
-    startLcd();
-    updateUI();
-  }
-
-  // Update display if time changed (minute precision)
-  if (!syncRtcTimeVar())
-  {
-    updateUI();
-  }
-
-  // Blink "[Edit]" text when editing
-  if (isEditingTimeRtc)
-  {
-    blinkEditingText(1);
-  }
-  else if (isEditingTimeFeed)
-  {
-    blinkEditingText(0);
-  }
-
-  ///////////////////////////////////////////////////////
-  // Feeding is handled by RTC alarm
-  // uncomment the code below if RTC alarm doesn't work
-  ///////////////////////////////////////////////////////
-  //
-  // checkFeedingTime();
-  //
-
-  if (rtc.alarmFired(1))
-  {
-    startFeeding();
-    setAlarmInterrupt();
-  }
-
-  delay(25); // Debounce buttons and avoid busy loop
+  delay(33); // Debounce buttons and avoid busy loop
 }
 
 ////////////////////
@@ -200,14 +159,14 @@ void preSleep()
   attachInterrupt(((2 /* Enter edit mode or confirm edit*/) == 2 ? 0 : ((2 /* Enter edit mode or confirm edit*/) == 3 ? 1 : -1)), btnISR, 0x0);
   lcd.noDisplay();
 
-  DEBUG_PRINTLN("Sleeping...");
+  Serial.println("Sleeping...");
   Serial.flush();
 }
 
 void postSleep()
 {
   detachInterrupt(((2 /* Enter edit mode or confirm edit*/) == 2 ? 0 : ((2 /* Enter edit mode or confirm edit*/) == 3 ? 1 : -1)));
-  DEBUG_PRINTLN("I've woken up!");
+  Serial.println("I've woken up!");
 
   startLcd();
 }
@@ -250,7 +209,6 @@ void startLcd()
   {
     return;
   }
-
   lcd.display(); // Turn on LCD display
   lcd.backlight(); // Turn on LCD backlight
 
@@ -272,7 +230,7 @@ void initRtc()
 {
   if (!rtc.begin())
   {
-    DEBUG_PRINTLN("Couldn't find RTC");
+    Serial.println("Couldn't find RTC");
     Serial.flush();
     while (1)
       delay(10);
@@ -284,17 +242,17 @@ void initRtc()
 
   if (rtc.lostPower())
   {
-    DEBUG_PRINTLN("RTC lost power, let's set the time! ");
+    Serial.println("RTC lost power, let's set the time! ");
     // When time needs to be set on a new device, or after a power loss, the
     // following line sets the RTC to the date & time this sketch was compiled
     rtc.adjust(DateTime((reinterpret_cast<const __FlashStringHelper *>(
-# 297 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
-                       (__extension__({static const char __c[] __attribute__((__progmem__)) = ("May 26 2024"); &__c[0];}))
-# 297 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+# 255 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
+                       (__extension__({static const char __c[] __attribute__((__progmem__)) = ("May 27 2024"); &__c[0];}))
+# 255 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
                        )), (reinterpret_cast<const __FlashStringHelper *>(
-# 297 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
-                                    (__extension__({static const char __c[] __attribute__((__progmem__)) = ("23:00:41"); &__c[0];}))
-# 297 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+# 255 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
+                                    (__extension__({static const char __c[] __attribute__((__progmem__)) = ("01:09:31"); &__c[0];}))
+# 255 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
                                     ))));
   }
 
@@ -324,14 +282,14 @@ void setAlarmInterrupt()
   DateTime alarmTime = DateTime(2024, 5, 12, feedingTimeHour(), feedingTimeMinute(), 0);
   if (!rtc.setAlarm1(alarmTime, DS3231_A1_Hour))
   {
-    DEBUG_PRINTLN("ERROR: Alarm wasn't set! ");
+    Serial.println("ERROR: Alarm wasn't set! ");
   }
   else
   {
-    DEBUG_PRINT("Alarm: ");
-    DEBUG_PRINT(alarmTime.hour());
-    DEBUG_PRINT(":");
-    DEBUG_PRINTLN(alarmTime.minute());
+    Serial.print("Alarm: ");
+    Serial.print(alarmTime.hour());
+    Serial.print(":");
+    Serial.println(alarmTime.minute());
     Serial.flush();
   }
 }
@@ -393,10 +351,10 @@ void printEvent(int i, int event)
     return;
   }
 
-  DEBUG_PRINT("EVENT: btn ");
-  DEBUG_PRINT(i);
-  DEBUG_PRINT(" ");
-  DEBUG_PRINTLN(eventStr);
+  Serial.print("EVENT: btn ");
+  Serial.print(i);
+  Serial.print(" ");
+  Serial.println(eventStr);
   Serial.flush();
 }
 
@@ -492,7 +450,7 @@ int checkBtnEdit(int event)
   }
   else if (event == 2)
   { // button release
-    DEBUG_PRINTLN("EDIT BUTTON RELEASED");
+    Serial.println("EDIT BUTTON RELEASED");
     if (!keepBtnHold[i])
     { // and not right after a "Hold" event
       if (isEditingTimeRtc)
@@ -508,7 +466,7 @@ int checkBtnEdit(int event)
       else
       {
         isEditingTimeFeed = true;
-        DEBUG_PRINTLN("editing feeding time...");
+        Serial.println("editing feeding time...");
       }
     }
     else
@@ -527,13 +485,13 @@ int checkBtnIncr(int event)
     if (isEditingTimeFeed)
     {
       // Increase feeding time (wrap around)
-      feedingTime++;
-      feedingTime %= 24 * 60 / 15;
+      feedingTime += EDIT_STEPS[feedStepID];
+      feedingTime %= 1440;
     }
     else if (isEditingTimeRtc)
     {
       // decrease rtc time (wrap around)
-      rtcTime += RTC_EDIT_STEPS[rtcStepID];
+      rtcTime += EDIT_STEPS[rtcStepID];
       rtcTime %= 1440;
     }
   }
@@ -548,13 +506,13 @@ int checkBtnDecr(int event)
     if (isEditingTimeFeed)
     {
       // decrease feeding time (wrap around)
-      feedingTime -= 1 - 24 * 60 / 15;
-      feedingTime %= 24 * 60 / 15;
+      feedingTime -= EDIT_STEPS[feedStepID] - 1440;
+      feedingTime %= 1440;
     }
     else if (isEditingTimeRtc)
     {
       // decrease rtc time (wrap around)
-      rtcTime -= RTC_EDIT_STEPS[rtcStepID] - 1440;
+      rtcTime -= EDIT_STEPS[rtcStepID] - 1440;
       rtcTime %= 1440;
     }
   }
@@ -571,13 +529,37 @@ int checkBtnFeed(int event)
       rtcStepID++;
       rtcStepID %= 6;
     }
-    else if (!isEditingTimeFeed && event != 3)
+    else if (isEditingTimeFeed)
+    { // change feed time editing step (minutes)
+      feedStepID++;
+      feedStepID %= 6;
+    }
+    else if (event != 3)
     { // button pressed
       startFeeding();
     }
   }
 
   return event;
+}
+
+void handleButtonEvents()
+{
+  // Track how many buttons pressed
+  int btnEvents = 0;
+
+  // Check button inputs
+  for (int i = 0; i < 4; i++)
+  {
+    btnEvents += checkBtn(BTN_PINS[i]);
+  }
+
+  // Check if there are button events
+  if (btnEvents > 0)
+  {
+    startLcd();
+    updateUI();
+  }
 }
 
 // void checkFeedingTime() {
@@ -603,6 +585,10 @@ int checkBtnFeed(int event)
 
 void startFeeding()
 {
+  // attempts to turn lcd on
+  // won't do anything if backlight already on
+  startLcd();
+
   // case: feeding triggered by alarm, in the middle of editing feed time
   if (isEditingTimeFeed)
   {
@@ -634,6 +620,33 @@ void startFeeding()
   servo.detach(); // Detach servo to save power
 
   updateUI();
+}
+
+void handleAutoFeeding()
+{
+  //////////////////////////////////////////////////////
+  // Feeding is handled by RTC alarm
+  // uncomment the code below if RTC alarm doesn't work
+  ///////////////////////////////////////////////////////
+  //
+  // checkFeedingTime();
+  //
+
+  if (rtc.alarmFired(1))
+  {
+    startFeeding();
+    setAlarmInterrupt();
+  }
+}
+
+int feedingTimeHour()
+{
+  return feedingTime / 60;
+}
+
+int feedingTimeMinute()
+{
+  return feedingTime % 60;
 }
 
 int rtcHour()
@@ -678,30 +691,6 @@ void applyNewTimeRTC()
   rtc.adjust(DateTime(2024, 5, 12, rtcHour(), rtcMinute(), 0));
 }
 
-int feedingTimeHour()
-{
-  // Convert from half-hour to hour
-  int hour = feedingTime;
-  hour /= 60 / 15;
-  return hour;
-}
-
-int feedingTimeMinute()
-{
-  // if it's odd, then the hour's not whole, aka an extra 30 minutes.
-  int minute = feedingTime;
-  minute %= 60 / 15;
-  // DEBUG_PRINT("Feeding minute (raw): ");
-  // DEBUG_PRINT(minute);
-  // DEBUG_PRINT(" (");
-  // DEBUG_PRINT(feedingTime);
-  // DEBUG_PRINTLN(")");
-  minute *= 15;
-  // DEBUG_PRINT("Feeding minute: ");
-  // DEBUG_PRINTLN(minute);
-  // Serial.flush();
-  return minute;
-}
 
 /////////////
 // DISPLAYS
@@ -716,6 +705,10 @@ void updateUI()
   {
     displayRtcEdit();
   }
+  else if (isEditingTimeFeed)
+  {
+    displayFeedTimeEdit();
+  }
   else
   {
     displayTime();
@@ -727,7 +720,7 @@ void displayRtcEdit()
   lcd.clear();
 
   lcd.print("Step: ");
-  lcd.print(RTC_EDIT_STEPS[rtcStepID]);
+  lcd.print(EDIT_STEPS[rtcStepID]);
   lcd.print(" mins.");
 
   // set cursor to second row
@@ -750,11 +743,41 @@ void displayRtcEdit()
   lcd.print(minute);
 }
 
+void displayFeedTimeEdit()
+{
+  lcd.clear();
+
+  lcd.print("Step: ");
+  lcd.print(EDIT_STEPS[feedStepID]);
+  lcd.print(" mins.");
+
+  // set cursor to second row
+  lcd.setCursor(0, 1);
+
+  int hour = feedingTimeHour();
+  int minute = feedingTimeMinute();
+
+  if (hour < 10)
+  {
+    lcd.print("0");
+  }
+  lcd.print(hour);
+  lcd.print(":");
+
+  if (minute < 10)
+  {
+    lcd.print("0");
+  }
+  lcd.print(minute);
+}
+
 // display current time and feeding time in LCD
 void displayTime()
 {
   // Display current time and feeding time on LCD
   lcd.clear();
+  lcd.setCursor(5,0);
+
   DateTime now = rtc.now();
   int hour = now.hour();
   int minute = now.minute();
@@ -772,6 +795,7 @@ void displayTime()
     lcd.print("0");
   }
   lcd.print(minute);
+  lcd.print("'");
 
   // Feeding Time
   lcd.setCursor(0, 1);
@@ -794,7 +818,7 @@ void displayTime()
 }
 
 // Blink "[Editing]" text when editing feed time
-void blinkEditingText(int row)
+void blinkEditText(bool editMode)
 {
   unsigned long currentTime = millis();
   if (currentTime - lastEditingBlinkTime >= 500 /* 0.5 secs*/)
@@ -802,20 +826,42 @@ void blinkEditingText(int row)
     showEditingText = !showEditingText;
     lastEditingBlinkTime = currentTime;
 
-    // Move the cursor to the position of "[Editing]" text
-    lcd.setCursor(10, row);
+    // Move the cursor to the position of "[EDIT]" text
+    lcd.setCursor(8, 1);
 
     if (showEditingText)
     {
-      lcd.print("[Edit]");
+      if (isEditingTimeRtc)
+      {
+        lcd.print(" EditRTC");
+      }
+      else
+      {
+        lcd.print("EditFeed");
+      }
     }
     else
     {
-      lcd.print("      "); // Clear it
+      lcd.print("           "); // Clear it
     }
 
     // Set the cursor position back to origin
     lcd.setCursor(0, 0);
+  }
+}
+
+void handleUi()
+{
+  // Update display if time changed (minute precision)
+  if (!syncRtcTimeVar())
+  {
+    updateUI();
+  }
+
+  // Blink "[Edit]" text when editing
+  if (isEditingTimeRtc || isEditingTimeFeed)
+  {
+    blinkEditText(1);
   }
 }
 

@@ -10,19 +10,16 @@
 // Define debug symbols
 #define DEBUG
 #ifdef DEBUG
-#define DEBUG_PRINT(x) DEBUG_PRINT(x)
-#define DEBUG_PRINTLN(x) DEBUG_PRINTLN(x)
+#define DEBUG_PRINT(x) Serial.print(x)
+#define DEBUG_PRINTLN(x) Serial.println(x)
 #else
 #define DEBUG_PRINT(x)
 #define DEBUG_PRINTLN(x)
 #endif
 
 // Define feeding time editing constants
-#define TIME_EDIT_PRECISION 15
-#define HOUR_FACTOR 60 / TIME_EDIT_PRECISION
-#define TIME_EDIT_MOD 24 * HOUR_FACTOR
-#define MAX_RTC 1440
-#define N_RTC_EDIT_STEPS 6
+#define MAX_TIME 1440
+#define N_EDIT_STEPS 6
 
 // Define LCD address and button pins
 #define BTN_EDIT 2  // Enter edit mode or confirm edit
@@ -34,6 +31,10 @@
 // Define servo pin and feeding duration
 #define SERVO_PIN 11
 #define FEED_DURATION 1000 // 1 second in milliseconds
+
+// Define edit mode IDs
+#define EDIT_MODE_FEED 0
+#define EDIT_MODE_RTC 1
 
 // Define intervals/timers (ms)
 #define BLINK_DELAY 500           // 0.5 secs
@@ -74,8 +75,9 @@ int feedingTime = 0; // Adjusted during init
 int rtcTime = 0;     // rtc time in minutes (max = 1440)
 
 // RTC editing steps
-const int RTC_EDIT_STEPS[6] = {1, 5, 10, 15, 30, 60}; // edit steps (minutes) to choose from
-int rtcStepID = 0;                                    // index of minutes chosen from RTC_EDIT_STEPS
+const int EDIT_STEPS[6] = {1, 5, 10, 15, 30, 60}; // edit steps (minutes) to choose from
+byte rtcStepID = 0;                               // index of minutes chosen from EDIT_STEPS
+byte feedStepID = 1;                              // index of minutes chosen from EDIT_STEPS
 
 // Flags
 // bool alreadyFed = false;       // Already fed at a certain time, don't feed again
@@ -104,81 +106,89 @@ const int BTN_PINS[4] = {
     BTN_FEED,
 };
 
-#line 105 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 107 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void setup();
-#line 131 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 133 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void loop();
-#line 190 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 149 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void managePower();
-#line 205 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 164 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void preSleep();
-#line 214 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 173 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void postSleep();
-#line 222 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 181 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void trySleeping();
-#line 233 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 192 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 bool shouldNoBacklight();
-#line 252 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 211 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void startLcd();
-#line 272 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 230 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void initLcd();
-#line 278 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 236 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void initRtc();
-#line 318 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 276 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void setAlarmInterrupt();
-#line 338 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 296 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void btnISR();
-#line 343 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 301 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void alarmISR();
-#line 354 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 312 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void enableButtons();
-#line 359 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 317 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void disableButtons();
-#line 364 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 322 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 bool isButtonsEnabled();
-#line 369 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 327 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int btnPinToArrId(int btnId);
-#line 374 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 332 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void printEvent(int i, int event);
-#line 451 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 409 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int checkBtn(int btnId);
-#line 482 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 440 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int checkBtnEdit(int event);
-#line 522 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 480 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int checkBtnIncr(int event);
-#line 543 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 501 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int checkBtnDecr(int event);
-#line 564 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 522 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int checkBtnFeed(int event);
-#line 603 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 545 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+void handleButtonEvents();
+#line 585 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void startFeeding();
-#line 638 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
-int rtcHour();
-#line 643 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
-int rtcMinute();
-#line 648 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
-void setRtcTimeVar(int hour, int minute);
-#line 653 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
-bool syncRtcTimeVar();
-#line 675 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
-void applyNewTimeRTC();
-#line 680 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 624 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+void handleAutoFeeding();
+#line 641 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int feedingTimeHour();
-#line 688 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 646 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int feedingTimeMinute();
-#line 712 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 651 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+int rtcHour();
+#line 656 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+int rtcMinute();
+#line 661 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+void setRtcTimeVar(int hour, int minute);
+#line 666 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+bool syncRtcTimeVar();
+#line 688 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+void applyNewTimeRTC();
+#line 701 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void updateUI();
-#line 724 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 717 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void displayRtcEdit();
-#line 753 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 745 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+void displayFeedTimeEdit();
+#line 774 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void displayTime();
-#line 796 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
-void blinkEditingText(int row);
-#line 828 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 820 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+void blinkEditText(bool editMode);
+#line 852 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+void handleUi();
+#line 874 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void loadFromEEPROM();
-#line 844 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 890 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void saveFeedingTime();
-#line 105 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 107 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void setup()
 {
 #ifdef DEBUG
@@ -208,54 +218,11 @@ void setup()
 void loop()
 {
   managePower();
+  handleButtonEvents();
+  handleUi();
+  handleAutoFeeding();
 
-  // Track how many buttons pressed
-  int btnEvents = 0;
-
-  // Check button inputs
-  for (int i = 0; i < 4; i++)
-  {
-    btnEvents += checkBtn(BTN_PINS[i]);
-  }
-
-  // Check if there are button events
-  if (btnEvents > 0)
-  {
-    startLcd();
-    updateUI();
-  }
-
-  // Update display if time changed (minute precision)
-  if (!syncRtcTimeVar())
-  {
-    updateUI();
-  }
-
-  // Blink "[Edit]" text when editing
-  if (isEditingTimeRtc)
-  {
-    blinkEditingText(1);
-  }
-  else if (isEditingTimeFeed)
-  {
-    blinkEditingText(0);
-  }
-
-  ///////////////////////////////////////////////////////
-  // Feeding is handled by RTC alarm
-  // uncomment the code below if RTC alarm doesn't work
-  ///////////////////////////////////////////////////////
-  //
-  // checkFeedingTime();
-  //
-
-  if (rtc.alarmFired(1))
-  {
-    startFeeding();
-    setAlarmInterrupt();
-  }
-
-  delay(25); // Debounce buttons and avoid busy loop
+  delay(33); // Debounce buttons and avoid busy loop
 }
 
 ////////////////////
@@ -334,7 +301,6 @@ void startLcd()
   {
     return;
   }
-
   lcd.display();   // Turn on LCD display
   lcd.backlight(); // Turn on LCD backlight
 
@@ -603,14 +569,14 @@ int checkBtnIncr(int event)
     if (isEditingTimeFeed)
     {
       // Increase feeding time (wrap around)
-      feedingTime++;
-      feedingTime %= TIME_EDIT_MOD;
+      feedingTime += EDIT_STEPS[feedStepID];
+      feedingTime %= MAX_TIME;
     }
     else if (isEditingTimeRtc)
     {
       // decrease rtc time (wrap around)
-      rtcTime += RTC_EDIT_STEPS[rtcStepID];
-      rtcTime %= MAX_RTC;
+      rtcTime += EDIT_STEPS[rtcStepID];
+      rtcTime %= MAX_TIME;
     }
   }
 
@@ -624,14 +590,14 @@ int checkBtnDecr(int event)
     if (isEditingTimeFeed)
     {
       // decrease feeding time (wrap around)
-      feedingTime -= 1 - TIME_EDIT_MOD;
-      feedingTime %= TIME_EDIT_MOD;
+      feedingTime -= EDIT_STEPS[feedStepID] - MAX_TIME;
+      feedingTime %= MAX_TIME;
     }
     else if (isEditingTimeRtc)
     {
       // decrease rtc time (wrap around)
-      rtcTime -= RTC_EDIT_STEPS[rtcStepID] - MAX_RTC;
-      rtcTime %= MAX_RTC;
+      rtcTime -= EDIT_STEPS[rtcStepID] - MAX_TIME;
+      rtcTime %= MAX_TIME;
     }
   }
 
@@ -645,15 +611,39 @@ int checkBtnFeed(int event)
     if (isEditingTimeRtc)
     { // change rtc editing step (minutes)
       rtcStepID++;
-      rtcStepID %= N_RTC_EDIT_STEPS;
+      rtcStepID %= N_EDIT_STEPS;
     }
-    else if (!isEditingTimeFeed && event != 3)
+    else if (isEditingTimeFeed)
+    { // change feed time editing step (minutes)
+      feedStepID++;
+      feedStepID %= N_EDIT_STEPS;
+    }
+    else if (event != 3)
     { // button pressed
       startFeeding();
     }
   }
 
   return event;
+}
+
+void handleButtonEvents()
+{
+  // Track how many buttons pressed
+  int btnEvents = 0;
+
+  // Check button inputs
+  for (int i = 0; i < 4; i++)
+  {
+    btnEvents += checkBtn(BTN_PINS[i]);
+  }
+
+  // Check if there are button events
+  if (btnEvents > 0)
+  {
+    startLcd();
+    updateUI();
+  }
 }
 
 // void checkFeedingTime() {
@@ -679,6 +669,10 @@ int checkBtnFeed(int event)
 
 void startFeeding()
 {
+  // attempts to turn lcd on
+  // won't do anything if backlight already on
+  startLcd();
+
   // case: feeding triggered by alarm, in the middle of editing feed time
   if (isEditingTimeFeed)
   {
@@ -710,6 +704,33 @@ void startFeeding()
   servo.detach(); // Detach servo to save power
 
   updateUI();
+}
+
+void handleAutoFeeding()
+{
+  //////////////////////////////////////////////////////
+  // Feeding is handled by RTC alarm
+  // uncomment the code below if RTC alarm doesn't work
+  ///////////////////////////////////////////////////////
+  //
+  // checkFeedingTime();
+  //
+
+  if (rtc.alarmFired(1))
+  {
+    startFeeding();
+    setAlarmInterrupt();
+  }
+}
+
+int feedingTimeHour()
+{
+  return feedingTime / 60;
+}
+
+int feedingTimeMinute()
+{
+  return feedingTime % 60;
 }
 
 int rtcHour()
@@ -754,30 +775,6 @@ void applyNewTimeRTC()
   rtc.adjust(DateTime(2024, 5, 12, rtcHour(), rtcMinute(), 0));
 }
 
-int feedingTimeHour()
-{
-  // Convert from half-hour to hour
-  int hour = feedingTime;
-  hour /= HOUR_FACTOR;
-  return hour;
-}
-
-int feedingTimeMinute()
-{
-  // if it's odd, then the hour's not whole, aka an extra 30 minutes.
-  int minute = feedingTime;
-  minute %= HOUR_FACTOR;
-  // DEBUG_PRINT("Feeding minute (raw): ");
-  // DEBUG_PRINT(minute);
-  // DEBUG_PRINT(" (");
-  // DEBUG_PRINT(feedingTime);
-  // DEBUG_PRINTLN(")");
-  minute *= TIME_EDIT_PRECISION;
-  // DEBUG_PRINT("Feeding minute: ");
-  // DEBUG_PRINTLN(minute);
-  // Serial.flush();
-  return minute;
-}
 
 /////////////
 // DISPLAYS
@@ -792,6 +789,10 @@ void updateUI()
   {
     displayRtcEdit();
   }
+  else if (isEditingTimeFeed)
+  {
+    displayFeedTimeEdit();
+  }
   else
   {
     displayTime();
@@ -803,7 +804,7 @@ void displayRtcEdit()
   lcd.clear();
 
   lcd.print("Step: ");
-  lcd.print(RTC_EDIT_STEPS[rtcStepID]);
+  lcd.print(EDIT_STEPS[rtcStepID]);
   lcd.print(" mins.");
 
   // set cursor to second row
@@ -826,11 +827,41 @@ void displayRtcEdit()
   lcd.print(minute);
 }
 
+void displayFeedTimeEdit()
+{
+  lcd.clear();
+
+  lcd.print("Step: ");
+  lcd.print(EDIT_STEPS[feedStepID]);
+  lcd.print(" mins.");
+
+  // set cursor to second row
+  lcd.setCursor(0, 1);
+
+  int hour = feedingTimeHour();
+  int minute = feedingTimeMinute();
+
+  if (hour < 10)
+  {
+    lcd.print("0");
+  }
+  lcd.print(hour);
+  lcd.print(":");
+
+  if (minute < 10)
+  {
+    lcd.print("0");
+  }
+  lcd.print(minute);
+}
+
 // display current time and feeding time in LCD
 void displayTime()
 {
   // Display current time and feeding time on LCD
   lcd.clear();
+  lcd.setCursor(5,0);
+
   DateTime now = rtc.now();
   int hour = now.hour();
   int minute = now.minute();
@@ -848,6 +879,7 @@ void displayTime()
     lcd.print("0");
   }
   lcd.print(minute);
+  lcd.print("'");
 
   // Feeding Time
   lcd.setCursor(0, 1);
@@ -870,7 +902,7 @@ void displayTime()
 }
 
 // Blink "[Editing]" text when editing feed time
-void blinkEditingText(int row)
+void blinkEditText(bool editMode)
 {
   unsigned long currentTime = millis();
   if (currentTime - lastEditingBlinkTime >= BLINK_DELAY)
@@ -878,20 +910,42 @@ void blinkEditingText(int row)
     showEditingText = !showEditingText;
     lastEditingBlinkTime = currentTime;
 
-    // Move the cursor to the position of "[Editing]" text
-    lcd.setCursor(10, row);
+    // Move the cursor to the position of "[EDIT]" text
+    lcd.setCursor(8, 1);
 
     if (showEditingText)
     {
-      lcd.print("[Edit]");
+      if (isEditingTimeRtc)
+      {
+        lcd.print(" EditRTC");
+      }
+      else
+      {
+        lcd.print("EditFeed");
+      }
     }
     else
     {
-      lcd.print("      "); // Clear it
+      lcd.print("           "); // Clear it
     }
 
     // Set the cursor position back to origin
     lcd.setCursor(0, 0);
+  }
+}
+
+void handleUi()
+{
+  // Update display if time changed (minute precision)
+  if (!syncRtcTimeVar())
+  {
+    updateUI();
+  }
+
+  // Blink "[Edit]" text when editing
+  if (isEditingTimeRtc || isEditingTimeFeed)
+  {
+    blinkEditText(1);
   }
 }
 
