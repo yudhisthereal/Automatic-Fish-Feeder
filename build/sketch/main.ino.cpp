@@ -8,7 +8,7 @@
 #include <LowPower.h>          // Include Low Power library
 
 // Define debug symbols
-#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #define DEBUG_PRINT(x) Serial.print(x)
 #define DEBUG_PRINTLN(x) Serial.println(x)
@@ -140,7 +140,7 @@ void disableButtons();
 bool isButtonsEnabled();
 #line 360 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int btnPinToArrId(int btnPin);
-#line 371 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+#line 401 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void printEvent(int i, int event);
 #line 457 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 int checkBtn(int btnId);

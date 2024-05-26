@@ -7,6 +7,7 @@
 # 7 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 2
 
 // Define debug symbols
+// #define DEBUG
 # 18 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 // Define feeding time editing constants
 
@@ -100,9 +101,9 @@ const int BTN_PINS[4] = {
 void setup()
 {
 
-  Serial.begin(9600);
 
-  Serial.println("System Starting");
+
+  ;
 
   servo.attach(11);
   servo.write(0);
@@ -165,7 +166,7 @@ void preSleep()
   attachInterrupt(((2 /* Enter edit mode or confirm edit*/) == 2 ? 0 : ((2 /* Enter edit mode or confirm edit*/) == 3 ? 1 : -1)), btnISR, 0x0);
   lcd.noDisplay();
 
-  Serial.println("Sleeping...");
+  ;
   Serial.flush();
 }
 
@@ -175,7 +176,7 @@ void preSleep()
 void postSleep()
 {
   detachInterrupt(((2 /* Enter edit mode or confirm edit*/) == 2 ? 0 : ((2 /* Enter edit mode or confirm edit*/) == 3 ? 1 : -1)));
-  Serial.println("I've woken up!");
+  ;
 
   startLcd();
 }
@@ -255,7 +256,7 @@ void initRtc()
 {
   if (!rtc.begin())
   {
-    Serial.println("Couldn't find RTC");
+    ;
     Serial.flush();
     while (1)
       delay(10);
@@ -267,7 +268,7 @@ void initRtc()
 
   if (rtc.lostPower())
   {
-    Serial.println("RTC lost power, let's set the time! ");
+    ;
     // When time needs to be set on a new device, or after a power loss, the
     // following line sets the RTC to the date & time this sketch was compiled
     rtc.adjust(DateTime((reinterpret_cast<const __FlashStringHelper *>(
@@ -276,7 +277,7 @@ void initRtc()
 # 280 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
                        )), (reinterpret_cast<const __FlashStringHelper *>(
 # 280 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino" 3
-                                    (__extension__({static const char __c[] __attribute__((__progmem__)) = ("01:26:31"); &__c[0];}))
+                                    (__extension__({static const char __c[] __attribute__((__progmem__)) = ("01:29:27"); &__c[0];}))
 # 280 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
                                     ))));
   }
@@ -310,14 +311,14 @@ void setAlarmInterrupt()
   DateTime alarmTime = DateTime(2024, 5, 12, feedingTimeHour(), feedingTimeMinute(), 0);
   if (!rtc.setAlarm1(alarmTime, DS3231_A1_Hour))
   {
-    Serial.println("ERROR: Alarm wasn't set! ");
+    ;
   }
   else
   {
-    Serial.print("Alarm: ");
-    Serial.print(alarmTime.hour());
-    Serial.print(":");
-    Serial.println(alarmTime.minute());
+    ;
+    ;
+    ;
+    ;
     Serial.flush();
   }
 }
@@ -362,41 +363,14 @@ int btnPinToArrId(int btnPin)
 {
   return btnPin - 2;
 }
-
-
-/**
- * @brief debug function to print button events
- * @param i button index
- * @param event button event
- */
+# 401 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
 void printEvent(int i, int event)
 {
-  char eventStr[8];
-  switch (event)
-  {
-  case 1:
-    strcpy(eventStr, "Pressed");
-    break;
-
-  case 2:
-    strcpy(eventStr, "Released");
-    break;
-
-  case 3:
-    strcpy(eventStr, "Hold");
-    break;
-
-  default:
-    return;
-  }
-
-  Serial.print("EVENT: btn ");
-  Serial.print(i);
-  Serial.print(" ");
-  Serial.println(eventStr);
-  Serial.flush();
+  // do nothing
 }
-# 408 "/home/yudhis/Documents/Kuliah/Embed/proyek/Automatic Fish Feeder/main/main.ino"
+
+
+
 /*
 return values:
   0: no events
@@ -489,7 +463,7 @@ int checkBtnEdit(int event)
   }
   else if (event == 2)
   { // button release
-    Serial.println("EDIT BUTTON RELEASED");
+    ;
     if (!keepBtnHold[i])
     { // and not right after a "Hold" event
       if (isEditingTimeRtc)
@@ -505,7 +479,7 @@ int checkBtnEdit(int event)
       else
       {
         isEditingTimeFeed = true;
-        Serial.println("editing feeding time...");
+        ;
       }
     }
     else

@@ -6,7 +6,7 @@
 #include <LowPower.h>          // Include Low Power library
 
 // Define debug symbols
-#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #define DEBUG_PRINT(x) Serial.print(x)
 #define DEBUG_PRINTLN(x) Serial.println(x)
